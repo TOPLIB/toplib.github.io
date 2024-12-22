@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отсчет до новго года</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dropdown">
+        <button class="dropbtn">
+            <svg width="50px" height="50px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.7071 14.7071C12.3166 15.0976 11.6834 15.0976 11.2929 14.7071L6.29289 9.70711C5.90237 9.31658 5.90237 8.68342 6.29289 8.29289C6.68342 7.90237 7.31658 7.90237 7.70711 8.29289L12 12.5858L16.2929 8.29289C16.6834 7.90237 17.3166 7.90237 17.7071 8.29289C18.0976 8.68342 18.0976 9.31658 17.7071 9.70711L12.7071 14.7071Z" fill="#ffffff"/>
+                </svg>
+        </button>
+        <div class="dropdown-content">
+            <input type="text" id="citySearch" placeholder="Поиск города...">
+            <div id="cityList">
+                <a href="#" data-timezone="Europe/Moscow">Москва</a>
+                <a href="#" data-timezone="Europe/Minsk">Минск</a>
+                <a href="#" data-timezone="Asia/Almaty">Алматы</a>
+                <a href="#" data-timezone="Europe/London">Лондон</a>
+                <a href="#" data-timezone="Asia/Tokyo">Токио</a>
+                <a href="#" data-timezone="Europe/Berlin">Берлин</a>
+                <a href="#" data-timezone="Europe/Paris">Париж</a>
+                <a href="#" data-timezone="Asia/Singapore">Сингапур</a>
+                <a href="#" data-timezone="Asia/Dubai">Дубай</a>
+                <a href="#" data-timezone="Europe/Rome">Рим</a>
+                <a href="#" data-timezone="Asia/Bangkok">Бангкок</a>
+                <a href="#" data-timezone="Europe/Madrid">Мадрид</a>
+                <a href="#" data-timezone="Asia/Seoul">Сеул</a>
+                <a href="#" data-timezone="Europe/Istanbul">Стамбул</a>
+                <a href="#" data-timezone="Asia/Jakarta">Джакарта</a>
+                <a href="#" data-timezone="Europe/Warsaw">Варшава</a>
+                <a href="#" data-timezone="Europe/Kiev">Киев</a>
+                <a href="#" data-timezone="Asia/Astana">Астана</a>
+                <a href="#" data-timezone="Europe/St_Petersburg">Санкт-Петербург</a>
+                <a href="#" data-timezone="Europe/Kaliningrad">Калининград</a>
+                <a href="#" data-timezone="Asia/Yekaterinburg">Екатеринбург</a>
+                <a href="#" data-timezone="Asia/Novosibirsk">Новосибирск</a>
+                <a href="#" data-timezone="Europe/Krakow">Краков</a>
+                <a href="#" data-timezone="Europe/Gdansk">Гданьск</a>
+                <a href="#" data-timezone="Europe/Lviv">Львов</a>
+                <a href="#" data-timezone="Europe/Odessa">Одесса</a>
+                <a href="#" data-timezone="Asia/Karaganda">Караганда</a>
+                <a href="#" data-timezone="Asia/Shymkent">Шымкент</a>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="container">
+        <h1><span>Отсчет до</span><div id="year">Загрузка...</div></h1>
+        <div id="countdown" class="countdown">
+            <div class="time">
+                <h2 id="days">NaN</h2>
+                <small>Дней</small>
+            </div>
+            <div class="time">
+                <h2 id="hours">NaN</h2>
+                <small>Часов</small>
+            </div>
+            <div class="time">
+                <h2 id="minutes">NaN</h2>
+                <small>Минут</small>
+            </div>
+            <div class="time">
+                <h2 id="seconds">NaN</h2>
+                <small>Секунд</small>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script src="snowfall.min.js"></script>
+    <script>
+        snowFall.snow(document.querySelector("body"), {
+            round: true,
+            minSize: 1,
+            maxSize: 5,
+            shadow: true,
+            flakeCount: 50,
+            flakeColor: "#c7dfea"
+        });
+    </script>
+</body>
+</html>
