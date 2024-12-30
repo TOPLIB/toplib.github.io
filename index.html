@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отсчет до новго года</title>
+    <title>Отсчет до Нового года</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript" >
        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -22,13 +23,49 @@
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/99319318" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .popup-content {
+            background: none;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 42px;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1001; /* Ensure fireworks are above the popup */
+        }
+    </style>
 </head>
 <body>
+    <div class="fireworks"></div>
     <div class="dropdown">
         <button class="dropbtn">
             <svg width="50px" height="50px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12.7071 14.7071C12.3166 15.0976 11.6834 15.0976 11.2929 14.7071L6.29289 9.70711C5.90237 9.31658 5.90237 8.68342 6.29289 8.29289C6.68342 7.90237 7.31658 7.90237 7.70711 8.29289L12 12.5858L16.2929 8.29289C16.6834 7.90237 17.3166 7.90237 17.7071 8.29289C18.0976 8.68342 18.0976 9.31658 17.7071 9.70711L12.7071 14.7071Z" fill="#ffffff"/>
-                </svg>
+            </svg>
         </button>
         <div class="dropdown-content">
             <input type="text" id="citySearch" placeholder="Поиск города...">
@@ -62,7 +99,6 @@
                 <a href="#" data-timezone="Asia/Karaganda">Караганда</a>
                 <a href="#" data-timezone="Asia/Shymkent">Шымкент</a>
             </div>
-            
         </div>
     </div>
 
@@ -88,16 +124,169 @@
         </div>
     </div>
 
-    <script src="scripts.js"></script>
-    <script src="snowfall.min.js"></script>
+    <div class="popup" id="popup">
+        <div class="popup-content">С новым годом!</div>
+    </div>
+
     <script>
-        snowFall.snow(document.querySelector("body"), {
-            round: true,
-            minSize: 1,
-            maxSize: 5,
-            shadow: true,
-            flakeCount: 50,
-            flakeColor: "#c7dfea"
+        var selectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // Локальный часовой пояс
+
+        function updateCountdown() {
+            var now = new Date();
+            var nextYear = now.getFullYear() + 1;
+            var countDownDate = new Date(`January 01, ${nextYear} 00:00:00`);
+
+            var options = {
+                timeZone: selectedTimezone,
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: false
+            };
+            var formatter = new Intl.DateTimeFormat([], options);
+            var parts = formatter.formatToParts(countDownDate);
+            var timeParts = {};
+
+            parts.forEach(function(part) {
+                if (part.type.startsWith('literal')) {
+                    return;
+                }
+                timeParts[part.type] = part.value;
+            });
+
+            var selectedCountDownDate = new Date(
+                timeParts.year,
+                timeParts.month - 1,
+                timeParts.day,
+                timeParts.hour,
+                timeParts.minute,
+                timeParts.second
+            );
+
+            var selectedNow = new Date();
+            var selectedDistance = selectedCountDownDate - selectedNow;
+
+            var selectedDays = Math.floor(selectedDistance / (1000 * 60 * 60 * 24));
+            var selectedHours = Math.floor((selectedDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var selectedMinutes = Math.floor((selectedDistance % (1000 * 60 * 60)) / (1000 * 60));
+            var selectedSeconds = Math.floor((selectedDistance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerHTML = selectedDays;
+            document.getElementById("hours").innerHTML = selectedHours;
+            document.getElementById("minutes").innerHTML = selectedMinutes;
+            document.getElementById("seconds").innerHTML = selectedSeconds;
+            document.getElementById("year").innerHTML = nextYear;
+
+            // Check if it's the new year
+            if (selectedDays === 0 && selectedHours === 0 && selectedMinutes === 0 && selectedSeconds === 0) {
+                launchFireworks();
+                showPopup();
+            }
+        }
+
+        function launchFireworks() {
+            if (typeof Fireworks !== 'undefined' && typeof Fireworks.default === 'function') {
+                const container = document.querySelector('.fireworks');
+                const fireworks = new Fireworks.default(container, {
+                    autoresize: true,
+                    opacity: 0.5,
+                    acceleration: 1.05,
+                    friction: 0.97,
+                    gravity: 1.5,
+                    particles: 50,
+                    traceLength: 3,
+                    traceSpeed: 10,
+                    explosion: 5,
+                    intensity: 30,
+                    flickering: 50,
+                    lineStyle: 'round',
+                    hue: {
+                        min: 0,
+                        max: 360
+                    },
+                    delay: {
+                        min: 30,
+                        max: 60
+                    },
+                    rocketsPoint: {
+                        min: 50,
+                        max: 50
+                    },
+                    lineWidth: {
+                        explosion: {
+                            min: 1,
+                            max: 3
+                        },
+                        trace: {
+                            min: 1,
+                            max: 2
+                        }
+                    },
+                    brightness: {
+                        min: 50,
+                        max: 80
+                    },
+                    decay: {
+                        min: 0.015,
+                        max: 0.03
+                    },
+                    mouse: {
+                        click: false,
+                        move: false,
+                        max: 1
+                    }
+                });
+                fireworks.launch(20);
+            } else {
+                console.error('Fireworks is not a constructor. Ensure the fireworks library is correctly loaded and defines the Fireworks class.');
+            }
+        }
+
+        function showPopup() {
+            const popup = document.getElementById('popup');
+            const popupContent = document.querySelector('.popup-content');
+            popup.style.display = 'flex';
+            setTimeout(() => {
+                popup.style.opacity = '1';
+                popupContent.style.opacity = '1';
+            }, 100); // Small delay to ensure the display property change is applied first
+            setTimeout(() => {
+                popupContent.style.opacity = '0';
+                setTimeout(() => {
+                    popup.style.opacity = '0';
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                    }, 500); // Wait for the fade out transition to complete
+                }, 500); // Wait for the fade out transition to complete
+            }, 2000); // Display the popup for 2 seconds
+        }
+
+        var x = setInterval(updateCountdown, 1000);
+
+        document.getElementById('citySearch').addEventListener('input', function() {
+            var filter = this.value.toLowerCase();
+            var cityList = document.getElementById('cityList');
+            var cities = cityList.getElementsByTagName('a');
+
+            for (var i = 0; i < cities.length; i++) {
+                var city = cities[i];
+                if (city.innerHTML.toLowerCase().indexOf(filter) > -1) {
+                    city.style.display = "";
+                } else {
+                    city.style.display = "none";
+                }
+            }
+        });
+
+        document.querySelectorAll('#cityList a').forEach(function(city) {
+            city.addEventListener('click', function(event) {
+                event.preventDefault();
+                selectedTimezone = this.getAttribute('data-timezone');
+                updateCountdown();
+            });
         });
     </script>
 </body>
